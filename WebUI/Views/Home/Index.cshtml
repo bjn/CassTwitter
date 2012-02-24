@@ -1,0 +1,30 @@
+﻿@using WebUI.Models
+@{
+    ViewBag.Title = "Home Page";
+}
+
+<h2>CassTwitter</h2>
+
+<div>
+	<h2>Tweets</h2>
+	<table>
+	@foreach (var tweet in new TweetRepository().GetAll(ViewContext.RequestContext.HttpContext.Request.QueryString["user"]))
+	{
+		<tr>
+			<td>@tweet.Text</td>
+			<td>@tweet.Date</td>
+		</tr>
+	}
+	</table>
+</div>
+
+<div>
+	<h2>Tweet</h2>
+	<form method="post" action="/Tweet/Create">
+		User
+		<input type="text" name="username"/><br/>
+		Tweet
+		<input type="text" name="text"/><br/>
+		<input type="submit"/>
+	</form>
+</div>

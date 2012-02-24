@@ -1,0 +1,28 @@
+﻿@using WebUI.Models
+@{
+	ViewBag.Title = "Index";
+}
+
+<h2>Users</h2>
+<div>
+	<h2>Create User</h2>
+	
+	<form method='POST' action="/User/Create">
+		<input type="text" name="username"/>
+		<input type="submit"/>
+	</form>
+</div>
+
+
+<div>
+	<h2>List of users</h2>
+	
+	<table>
+		@foreach (var user in new UserRepository().GetAll())
+		{
+			<tr>
+				<td>@user.Username</td>
+			</tr>
+		}
+	</table>
+</div>
