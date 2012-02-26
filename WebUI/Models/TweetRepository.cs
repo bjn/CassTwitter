@@ -22,9 +22,10 @@ namespace WebUI.Models
 				var family = db.GetColumnFamily("tweets");
 
 				dynamic record = family.CreateRecord(tweet.Date);
-				record.UserId = tweet.UserId;
-				record.Text = tweet.Text;
-				record.Date = tweet.Date;
+				record.userid = tweet.UserId;
+				record.text = tweet.Text;
+				record.date = tweet.Date;
+			    record.d = tweet.UserId;
 
 				db.Attach(record);
 				db.SaveChanges();
@@ -39,7 +40,7 @@ namespace WebUI.Models
 				if (username != null)
 				{
 					var user = new UserRepository().Get(username);
-					query = "select * from tweets where UserID='" + user.Id + "'";
+					query = "select * from tweets where userid='" + user.Id + "'";
 				} else
 				{
 					query = "select * from tweets";
@@ -54,9 +55,9 @@ namespace WebUI.Models
 					var id = tweet.UserId;
 					tw.Add( new Tweet
 					             	{
-					             		Date = tweet.Date,
-					             		Text = tweet.Text,
-					             		UserId = tweet.UserId,
+					             		Date = tweet.date,
+					             		Text = tweet.text,
+					             		UserId = tweet.userid,
 									//	UserName = repo.Get().Username
 					             	});
 				}

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using FluentCassandra;
 using FluentCassandra.Types;
 
 namespace WebUI.Models
@@ -14,7 +15,7 @@ namespace WebUI.Models
 		 		var family = db.GetColumnFamily<UTF8Type>("users");
 
 		 		dynamic record = family.CreateRecord(user.Id);
-		 		record.Username = user.Username;
+		 		record.username = user.Username;
 
 				db.Attach(record);
 				db.SaveChanges();
@@ -30,7 +31,7 @@ namespace WebUI.Models
 				{
 					yield return new User
 					             	{
-					             		Username = user.Username
+					             		Username = user.username
 					             	};
 				}
 			}
@@ -40,7 +41,7 @@ namespace WebUI.Models
 		{
 			using (var db = new CassandraContextFactory().Get())
 			{
-				var users = db.ExecuteQuery("select * from users where Username='"+username+"'");
+				var users = db.ExecuteQuery("select * from users where username='"+username+"'");
 				dynamic user = users.First();
 				return new User { Username = user.Username, Id = user.Key};
 			}
