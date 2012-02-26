@@ -5,6 +5,29 @@ create keyspace twitter
 
 use twitter;
 
+create column family test
+  with column_type = 'Standard'
+  and comparator = 'UTF8Type'
+  and default_validation_class = 'BytesType'
+  and key_validation_class = 'BytesType'
+  and rows_cached = 0.0
+  and row_cache_save_period = 0
+  and row_cache_keys_to_save = 2147483647
+  and keys_cached = 200000.0
+  and key_cache_save_period = 14400
+  and read_repair_chance = 1.0
+  and gc_grace = 864000
+  and min_compaction_threshold = 4
+  and max_compaction_threshold = 32
+  and replicate_on_write = true
+  and row_cache_provider = 'ConcurrentLinkedHashCacheProvider'
+  and compaction_strategy = 'org.apache.cassandra.db.compaction.SizeTieredCompactionStrategy'
+  and column_metadata = [
+    {column_name : 'd',
+    validation_class : UUIDType,
+    index_name : 'test_d_idx',
+    index_type : 0}];
+
 create column family tweets
   with column_type = 'Standard'
   and comparator = 'UTF8Type'
@@ -23,13 +46,17 @@ create column family tweets
   and row_cache_provider = 'ConcurrentLinkedHashCacheProvider'
   and compaction_strategy = 'org.apache.cassandra.db.compaction.SizeTieredCompactionStrategy'
   and column_metadata = [
-    {column_name : 'Date',
-    validation_class : DateType},
-    {column_name : 'Text',
-    validation_class : UTF8Type},
-    {column_name : 'UserID',
+    {column_name : 'd',
     validation_class : UUIDType,
-    index_name : 'tweets_UserID_idx',
+    index_name : 'tweets_d_idx',
+    index_type : 0},
+    {column_name : 'date',
+    validation_class : DateType},
+    {column_name : 'text',
+    validation_class : UTF8Type},
+    {column_name : 'userid',
+    validation_class : UUIDType,
+    index_name : 'tweets_userid_idx',
     index_type : 0}];
 
 create column family users
@@ -50,8 +77,7 @@ create column family users
   and row_cache_provider = 'ConcurrentLinkedHashCacheProvider'
   and compaction_strategy = 'org.apache.cassandra.db.compaction.SizeTieredCompactionStrategy'
   and column_metadata = [
-    {column_name : 'Username',
+    {column_name : 'username',
     validation_class : UTF8Type,
-    index_name : 'users_Username_idx',
+    index_name : 'users_username_idx',
     index_type : 0}];
-
