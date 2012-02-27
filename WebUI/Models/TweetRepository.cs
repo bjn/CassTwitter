@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text.RegularExpressions;
 using FluentCassandra.Types;
 
 namespace WebUI.Models
@@ -21,11 +23,33 @@ namespace WebUI.Models
 			{
 				var family = db.GetColumnFamily("tweets");
 
-				dynamic record = family.CreateRecord(tweet.Date);
+				var tweetId = Guid.NewGuid();
+				dynamic record = family.CreateRecord(tweetId);
 				record.userid = tweet.UserId;
 				record.text = tweet.Text;
 				record.date = tweet.Date;
-			    record.d = tweet.UserId;
+
+				Regex reg = new Regex(@"((mailto\:|(news|(ht|f)tp(s?))\://){1}\S+)");
+				var match = reg.Match(tweet.Text);
+				if (match.Success)
+				{
+					string url = match.Value;
+					var urlFamily = db.GetColumnFamily("urls");
+
+					var urlRow = urlFamily.CreateRecord(url);
+					urlRow.TrySetColumn(tweet.UserId, tweetId);
+
+					db.Attach(urlRow);
+					
+					var userUrlFamily = db.GetSuperColumnFamily("user_urls");
+					dynamic userUrlRow = userUrlFamily.CreateRecord(tweet.UserId);
+					db.Attach(userUrlRow);
+
+					var superColumn = userUrlRow.CreateSuperColumn();
+					superColumn.TrySetColumn(tweetId, "");
+
+					userUrlRow[url] = superColumn;
+				}
 
 				db.Attach(record);
 				db.SaveChanges();

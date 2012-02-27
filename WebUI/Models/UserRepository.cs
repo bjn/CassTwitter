@@ -16,7 +16,7 @@ namespace WebUI.Models
 
 		 		dynamic record = family.CreateRecord(user.Id);
 		 		record.username = user.Username;
-
+				
 				db.Attach(record);
 				db.SaveChanges();
 		 	}
